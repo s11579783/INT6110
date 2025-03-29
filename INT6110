@@ -6,11 +6,23 @@
     <title>智慧農業雲平臺系統</title>
     <link rel="icon" href="data:,"> <!-- 禁用favicon请求 -->
     <style>
+       @font-face {
+            font-family: 'FZLBK';
+            src: url('fonts/FZLBK.ttf') format('truetype'); /* 替换为你的字体文件路径 */
+            font-weight: normal;
+            font-style: normal;
+        }
+       @font-face {
+            font-family: 'FZYanZQKSJF';
+            src: url('fonts/FZYanZQKSJF.ttf') format('truetype'); /* 替换为你的字体文件路径 */
+            font-weight: normal;
+            font-style: normal;
+        }
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Microsoft YaHei', sans-serif;
+            font-family: 'FZYanZQKSJF', sans-serif;
         }
         
         body {
@@ -33,7 +45,8 @@
             color: #2c7d31;
             text-align: center;
             margin-bottom: 20px;
-            font-size: 28px;
+            font-size: 50px;
+            font-family: 'FZLBK', sans-serif;
         }
         
         .dashboard {
@@ -72,7 +85,6 @@
         .control-group label {
             display: block;
             margin-bottom: 5px;
-            font-weight: bold;
             color: #555;
         }
         
@@ -82,11 +94,34 @@
         }
         
         .control-group input[type="range"] {
-            flex: 1;
+            -webkit-appearance: none;
+            width: 100%;
             height: 10px;
-            background: #ddd;
-            outline: none;
+            background: linear-gradient(to right, #2c7d31 0%, #2c7d31 var(--fill-percent, 50%), #ddd var(--fill-percent, 50%), #ddd 100%);
             border-radius: 5px;
+            outline: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2c7d31;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #2c7d31;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .control-group input[type="range"]::-moz-focus-outer {
+            border: 0;
         }
         
         .control-group .value {
@@ -821,7 +856,15 @@ function initMusic() {
         document.removeEventListener('click', firstInteraction);
     }, { once: true });
 }
-        
+
+function updateSliderFill() {
+  const sliders = document.querySelectorAll('.control-group input[type="range"]');
+  sliders.forEach(slider => {
+    const percent = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+    slider.style.setProperty('--fill-percent', `${percent}%`);
+  });
+}
+
         // 初始化
         function init() {
             initRaindrops();
@@ -831,6 +874,11 @@ function initMusic() {
             checkStatus();
             startGrowthSimulation();
             initMusic(); // 初始化音乐控制
+  updateSliderFill(); // 初始化滑块填充
+  // 监听所有滑块的input事件
+  document.querySelectorAll('.control-group input[type="range"]').forEach(slider => {
+    slider.addEventListener('input', updateSliderFill);
+  });
         }
         
         // 頁面加載時初始化
